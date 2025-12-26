@@ -8,8 +8,6 @@ df = pd.read_csv(
     skiprows=1,
     header=None
 )
-
-# Keep first two columns only
 df = df.iloc[:, :2]
 df.columns = ["Month", "UK_Average_House_Price"]
 
@@ -30,16 +28,18 @@ df = df.dropna(subset=["Date", "UK_Average_House_Price"])
 
 df = df[df["Date"].dt.year >= 2011]
 
-df = df[df["Date"].dt.month.isin([1, 4, 7, 10])]
-
 df["Year"] = df["Date"].dt.year
 df["Quarter"] = "Q" + df["Date"].dt.quarter.astype(str)
 
 clean_df = (
-    df[["Year", "Quarter", "UK_Average_House_Price"]]
-    .sort_values(["Year", "Quarter"])
-    .reset_index(drop=True)
+    df.groupby(["Year", "Quarter"], as_index=False)["UK_Average_House_Price"]
+      .mean()
+      .round(0)
+      .sort_values(["Year", "Quarter"])
+      .reset_index(drop=True)
 )
+
+clean_df["UK_Average_House_Price"] = clean_df["UK_Average_House_Price"].astype(int)
 
 output_path = "data/clean/uk_house_price_quarterly.csv"
 clean_df.to_csv(output_path, index=False)
