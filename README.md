@@ -1,4 +1,4 @@
-# uk_housing_interest_rates_analysis
+# uk_house_price_analysis
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/JoshuaJoji/uk_housing_interest_rates_analysis/tree/main.svg?style=svg)](https://app.circleci.com/pipelines/github/JoshuaJoji/uk_housing_interest_rates_analysis?branch=main)
 
