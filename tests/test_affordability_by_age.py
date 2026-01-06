@@ -3,6 +3,7 @@ import pandas as pd
 
 DATA_PATH = Path("data/raw/Income_by_age_and_gender.csv")
 
+# Helper function to load the dataset
 def load_income() -> pd.DataFrame:
     assert DATA_PATH.exists(), f"Income dataset not found: {DATA_PATH.resolve()}"
     df = pd.read_csv(DATA_PATH)
@@ -18,25 +19,24 @@ def load_income() -> pd.DataFrame:
     df["Age_Group"] = df["Age_Group"].astype(str).str.strip()
 
     return df
-
-
+# Test cases for the income dataset
 def test_income_has_expected_shape():
     df = load_income()
     assert df.shape[1] == 3, "Income dataset should have exactly 3 columns"
 
-
+# Check that required columns are non-empty and of correct type
 def test_income_required_columns_non_empty():
     df = load_income()
     assert df["Age_Group"].notna().all(), "Age_Group contains missing values"
     assert df["Gender"].notna().all(), "Gender contains missing values"
     assert df["Median_Salary"].notna().all(), "Median_Salary contains non-numeric/missing values"
 
-
+# Check that Median_Salary values are positive
 def test_income_salaries_positive():
     df = load_income()
     assert (df["Median_Salary"] > 0).all(), "Median_Salary must be positive"
 
-
+# Check that there are exactly two genders in data
 def test_income_has_two_genders():
     df = load_income()
     genders = set(df["Gender"].str.lower().unique())
