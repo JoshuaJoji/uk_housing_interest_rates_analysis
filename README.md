@@ -5,8 +5,6 @@
 This repository contains the datasets, cleaning pipeline, analysis scripts, and unit tests for my DAT5501 project.  
 The project explores how UK house prices relate to **inflation (CPI)**, the **Bank of England base rate**, **affordability**, and **market volatility**.
 
-Circle CI Status: 
-
 ---
 
 ## Data Sources
