@@ -1,58 +1,45 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import os
+from pathlib import Path
 
-# Load data
-def load_affordability_data(
-    path="data/clean/Average_UK_houseprices_and_salary.csv",
-):
-    df = pd.read_csv(path)
+from affordability_analysis import load_affordability_data, compute_affordability_ratio
 
-    df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
-    df["Real_House_Price"] = pd.to_numeric(df["Real_House_Price"], errors="coerce")
-    df["Real_Median_Salary"] = pd.to_numeric(df["Real_Median_Salary"], errors="coerce")
+DATA_PATH = Path("data/clean/Average_UK_houseprices_and_salary.csv")
 
-    df = df.dropna(subset=["Real_House_Price", "Real_Median_Salary"]).copy()
+# Test cases for affordability_analysis module
+def test_input_dataset_exists():
+    assert DATA_PATH.exists(), f"Dataset not found at: {DATA_PATH.resolve()}"
 
-    return df
+# Test loading and cleaning affordability data
+def test_load_affordability_data_schema_and_non_empty():
+    df = load_affordability_data(str(DATA_PATH))
 
-# Compute affordability ratio
-def compute_affordability_ratio(df):
-    df = df.copy()
-    df["Affordability_Ratio"] = (
-        df["Real_House_Price"] / df["Real_Median_Salary"])
-    return df
+    expected = {"Year", "Real_House_Price", "Real_Median_Salary"}
+    assert expected.issubset(df.columns), f"Missing required columns. Found: {list(df.columns)}"
+    assert len(df) > 0, "Dataset is empty after loading/cleaning"
 
-# Plot affordability ratio over time
-def plot_affordability(df, out_path="outputs/affordability_ratio_over_time.png"):
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+# Additional tests for data integrity and computations
+def test_load_affordability_data_no_missing_core_values():
+    df = load_affordability_data(str(DATA_PATH))
+    core = df[["Year", "Real_House_Price", "Real_Median_Salary"]]
+    assert core.notna().all().all(), "Core columns contain NaNs after conversion/dropna"
 
-    plt.figure(figsize=(10, 5))
-    plt.plot(
-        df["Year"],
-        df["Affordability_Ratio"],
-        color="black",
+# Test computation of affordability ratio
+def test_compute_affordability_ratio_adds_column_and_valid_values():
+    df = load_affordability_data(str(DATA_PATH))
+    out = compute_affordability_ratio(df)
+
+    assert "Affordability_Ratio" in out.columns, "Affordability_Ratio column was not created"
+    assert out["Affordability_Ratio"].notna().all(), "Affordability_Ratio contains NaNs"
+    assert (out["Affordability_Ratio"] > 1).all(), "Affordability_Ratio should be > 1"
+    assert (out["Affordability_Ratio"] < 100).all(), (
+        "Affordability_Ratio seems unrealistically large; check salary units"
     )
 
-    plt.xlabel("Year")
-    plt.ylabel("House Price / Median Salary")
-    plt.title("UK Housing Affordability (Real Terms)")
-    plt.grid(True)
-    years = df["Year"].astype(int)
-    plt.xticks(years[::5], years[::5])
+# Test that Year column is integer-like and sorted
+def test_year_integer_like_and_sorted():
+    df = load_affordability_data(str(DATA_PATH))
+    years = pd.to_numeric(df["Year"], errors="coerce")
 
-    plt.tight_layout()
-    plt.savefig(out_path)
-    plt.show()
-
-
-def main():
-    df = load_affordability_data()
-    df = compute_affordability_ratio(df)
-
-    plot_affordability(df)
-
-    print(df.head())
-
-if __name__ == "__main__":
-    main()
+    assert years.notna().all(), "Year contains non-numeric values"
+    assert (years % 1 == 0).all(), "Year contains decimals (should be whole years)"
+    assert years.is_monotonic_increasing, "Year should be sorted ascending"
