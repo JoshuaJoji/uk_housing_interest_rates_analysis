@@ -1,22 +1,22 @@
 import pandas as pd
 import os
 
-
+# Aggregate quarterly bank rate data into yearly averages
 def aggregate_bank_rate_yearly(
     input_path="data/clean/bank_rate_quarterly.csv",
     output_path="data/processed/bank_rate_yearly_avg.csv",
 ):
     df = pd.read_csv(input_path)
 
-    df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
+    df["Year"] = pd.to_numeric(df["Year"], errors="coerce") # Convert Year to numeric
     df["Bank_Rate_Quarterly_Avg"] = pd.to_numeric(
         df["Bank_Rate_Quarterly_Avg"], errors="coerce"
     )
 
-    df = df.dropna(subset=["Year", "Bank_Rate_Quarterly_Avg"])
-
+    df = df.dropna(subset=["Year", "Bank_Rate_Quarterly_Avg"]) # Ensure no NaN values
+    
     yearly = (
-        df.groupby("Year")["Bank_Rate_Quarterly_Avg"]
+        df.groupby("Year")["Bank_Rate_Quarterly_Avg"] # Aggregate to yearly average
         .mean()
         .reset_index()
         .rename(columns={"Bank_Rate_Quarterly_Avg": "Bank_Rate_Yearly_Avg"})

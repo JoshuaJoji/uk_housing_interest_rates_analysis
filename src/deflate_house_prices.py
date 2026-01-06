@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
+# Helper function to convert quarter representation to integer
 def quarter_to_int(q):
     if isinstance(q, str):
         q = q.strip().upper()
@@ -10,7 +10,7 @@ def quarter_to_int(q):
             q = q[1:]
     return int(q)
 
-
+# Load house prices data
 def load_house_prices(path="data/clean/uk_house_price_quarterly.csv") -> pd.DataFrame:
     df = pd.read_csv(path)
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
@@ -21,7 +21,7 @@ def load_house_prices(path="data/clean/uk_house_price_quarterly.csv") -> pd.Data
     df["Quarter"] = df["Quarter"].astype(int)
     return df
 
-
+# Load CPI quarterly average data
 def load_cpi_quarterly_avg(path="data/clean/cpi_quarterly_avg.csv") -> pd.DataFrame:
     df = pd.read_csv(path)
     df["Year"] = pd.to_numeric(df["Year"], errors="coerce")
@@ -32,7 +32,7 @@ def load_cpi_quarterly_avg(path="data/clean/cpi_quarterly_avg.csv") -> pd.DataFr
     df["Quarter"] = df["Quarter"].astype(int)
     return df
 
-
+# Merge house prices with CPI data
 def merge_house_and_cpi(house: pd.DataFrame, cpi: pd.DataFrame) -> pd.DataFrame:
     df = pd.merge(house, cpi, on=["Year", "Quarter"], how="inner")
     df["t"] = df["Year"] * 4 + (df["Quarter"] - 1)
@@ -40,7 +40,7 @@ def merge_house_and_cpi(house: pd.DataFrame, cpi: pd.DataFrame) -> pd.DataFrame:
     df["Year_Quarter"] = df["Year"].astype(str) + " Q" + df["Quarter"].astype(str)
     return df
 
-
+# Deflate house prices using CPI
 def deflate_house_prices(df: pd.DataFrame) -> pd.DataFrame:
     """
     Convert nominal prices to real prices using CPI.
@@ -55,8 +55,7 @@ def deflate_house_prices(df: pd.DataFrame) -> pd.DataFrame:
 
 
 from matplotlib.ticker import FuncFormatter
-
-
+# Plot nominal vs real house prices
 def plot_nominal_vs_real(
     df: pd.DataFrame,
     out_path="outputs/nominal_vs_real_house_prices.png",

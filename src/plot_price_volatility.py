@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-
+# Function to plot house price volatility over time
 def plot_volatility(
     path="data/processed/yearly_price_volatility.csv",
     out_path="outputs/house_price_volatility_over_time.png",

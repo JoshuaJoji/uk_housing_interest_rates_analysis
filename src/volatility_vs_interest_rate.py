@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
 import os
 
-
+# Load and merge datasets
 def load_and_merge():
     volatility = pd.read_csv(
         "data/processed/yearly_price_volatility.csv"
@@ -17,7 +17,7 @@ def load_and_merge():
 
     return df
 
-
+# Plotting and correlation analysis
 def plot_and_correlate(df):
     os.makedirs("outputs", exist_ok=True)
 

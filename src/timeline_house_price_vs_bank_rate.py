@@ -28,7 +28,7 @@ house["UK_Average_House_Price"] = pd.to_numeric(
 bank = bank.dropna()
 house = house.dropna()
 
-# Merge on Year + Quarter
+# Merge on Year+Quarter
 df = pd.merge(bank, house, on=["Year", "Quarter"], how="inner")
 
 # Continuous time variable for sorting

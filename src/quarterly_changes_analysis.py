@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import pearsonr
 import os
 
-
+# Helper function to convert quarter strings to integers
 def quarter_to_int(q):
     if isinstance(q, str):
         q = q.strip().upper()
@@ -11,7 +11,7 @@ def quarter_to_int(q):
             q = q[1:]
     return int(q)
 
-
+# Load and preprocess data
 def load_data(
     bank_path="data/clean/bank_rate_quarterly.csv",
     house_path="data/clean/uk_house_price_quarterly.csv",
@@ -41,7 +41,7 @@ def load_data(
 
     return df.dropna().copy()
 
-
+# Compute Pearson correlation
 def compute_correlation(df):
     r, p = pearsonr(
         df["Bank_Rate_Quarterly_Avg"],
@@ -49,7 +49,7 @@ def compute_correlation(df):
     )
     return r, p
 
-
+# Plot scatter plot
 def plot_scatter(df, out_path):
     plt.figure(figsize=(7, 5))
     plt.scatter(
