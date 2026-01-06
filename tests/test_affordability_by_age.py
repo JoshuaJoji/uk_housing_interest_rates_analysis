@@ -41,4 +41,5 @@ def test_income_has_two_genders():
     df = load_income()
     genders = set(df["Gender"].str.lower().unique())
     assert genders.issubset({"male", "female"}), f"Unexpected gender labels: {genders}"
-    assert len(genders) == 2, "Expected exactly two genders (Male/Female)"
+    assert len(genders) == 3 #force error
+#    assert len(genders) == 2, "Expected exactly two genders (Male/Female)"
