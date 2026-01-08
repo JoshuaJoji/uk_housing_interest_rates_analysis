@@ -7,7 +7,7 @@
 This repository contains the datasets, cleaning pipeline, analysis scripts, and unit tests for my DAT5501 project.  
 The project explores how UK house prices relate to **inflation (CPI)**, the **Bank of England base rate**, **affordability**, and **market volatility**.
 
-**890 Lines of Code**
+**920 Lines of Code**
 ---
 
 ## Data Sources
@@ -145,6 +145,9 @@ Unit tests in `tests/` validate data quality and reproducibility (stable, non-ra
   - Processed volatility dataset exists and has required columns
   - `Price_STD` and transaction counts are positive
   - Years are ordered correctly
+
+- `test_dataset_sanity.py`
+  - Adds CI sanity checks to validate dataset presence, size, and value ranges for reproducible analysis.
 
 Run all tests with:
 ```bash
